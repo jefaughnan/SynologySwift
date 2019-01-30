@@ -15,11 +15,19 @@ class SynologySwiftGlobal {
     
     static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
         
+        /* Time profiler */
+        let startTime = DispatchTime.now()
+        let endBlock: (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> Void = { (result: SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) in
+            let endTime = DispatchTime.now()
+            SynologySwiftTools.logTimeProfileInterval(message: "Global APIs", start: startTime, end: endTime)
+            completion(result)
+        }
+        
         /* Return existing APIs infos if already exist */
-        if let apisInfos = APIsInfo {return completion(.success(apisInfos))}
+        if let apisInfos = APIsInfo {return endBlock(.success(apisInfos))}
         
         guard let dsInfos = dsInfos else {
-            return completion(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
+            return endBlock(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
         }
         
         let params = [
@@ -37,7 +45,7 @@ class SynologySwiftGlobal {
                 /* Check data integrity */
                 if apisInfos.success {
                     self.APIsInfo = apisInfos
-                    completion(.success(apisInfos))
+                    endBlock(.success(apisInfos))
                 } else {
                     let errorDescription: String
                     if let code = apisInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
@@ -45,10 +53,10 @@ class SynologySwiftGlobal {
                     } else {
                         errorDescription = "An error occured - APIs infos not reachable"
                     }
-                    completion(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
+                    endBlock(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
                 }
             case .failure(let error):
-                completion(.failure(.requestError(error)))
+                endBlock(.failure(.requestError(error)))
             }
         }
     }

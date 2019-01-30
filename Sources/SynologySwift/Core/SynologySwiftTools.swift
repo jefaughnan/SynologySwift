@@ -24,6 +24,12 @@ class SynologySwiftTools {
         return String(message[match.lowerBound..<match.upperBound])
     }
     
+    static func logTimeProfileInterval(message: String, start: DispatchTime, end: DispatchTime) {
+        let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
+        let timeInterval = Double(nanoTime) / 1_000_000_000
+        logMessage("Time profiler - \(message) : \(timeInterval) seconds")
+    }
+    
     /* Generate random string with specific length */
     static func generateRandomString(length: Int) -> String {
         let chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+-/"

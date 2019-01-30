@@ -20,8 +20,16 @@ public class SynologySwiftURLResolver {
     
     static func resolve(quickConnectId: String, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
         
+        /* Time profiler */
+        let startTime = DispatchTime.now()
+        let endBlock: (SynologySwift.Result<DSInfos>) -> Void = { (result: SynologySwift.Result<DSInfos>) in
+            let endTime = DispatchTime.now()
+            SynologySwiftTools.logTimeProfileInterval(message: "URLResolver", start: startTime, end: endTime)
+            completion(result)
+        }
+        
         /* Return existing DS infos if already exist */
-        if let dsResultInfos = dsResultInfos {return completion(.success(dsResultInfos))}
+        if let dsResultInfos = dsResultInfos {return endBlock(.success(dsResultInfos))}
         
         getServerInfosForId(quickConnectId) { (result) in
             switch result {
@@ -54,7 +62,7 @@ public class SynologySwiftURLResolver {
                         guard data.success && !data.diskHibernation,
                             let host = data.host,
                             let port = data.port
-                            else {return}
+                        else {return}
                         
                         /* Suspend queue & cancel other operations */
                         pingpongQueue.isSuspended = true
@@ -66,7 +74,7 @@ public class SynologySwiftURLResolver {
                         
                         let infos = self.DSInfos(host: host, port: port)
                         self.dsResultInfos = infos
-                        return completion(SynologySwift.Result.success(infos))
+                        return endBlock(SynologySwift.Result.success(infos))
                     case .failure(_): (/* Nothing to do, not reachable */)
                     }
                 }
@@ -81,9 +89,9 @@ public class SynologySwiftURLResolver {
                 /* Ping host address ddns */
                 if let ddns = data.server?.ddns, ddns != "NULL" {
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         testPingPongHost(host: ddns, port: port, completion: { (result) in
-                            asyncOperation.result = result
+                            operationEnded(result)
                         })
                     }
                     asyncOperation.completionBlock = {pingpongCompletion(asyncOperation.result)}
@@ -93,9 +101,9 @@ public class SynologySwiftURLResolver {
                 /* Ping host address fqdn */
                 if let fqdn = data.server?.fqdn, fqdn != "NULL" {
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         testPingPongHost(host: fqdn, port: port, completion: { (result) in
-                            asyncOperation.result = result
+                            operationEnded(result)
                         })
                     }
                     asyncOperation.completionBlock = {pingpongCompletion(asyncOperation.result)}
@@ -105,9 +113,9 @@ public class SynologySwiftURLResolver {
                 /* Ping external address IPV4 */
                 if let ip = data.server?.external?.ip {
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         testPingPongHost(host: ip, port: data.server?.external?.port ?? port, completion: { (result) in
-                            asyncOperation.result = result
+                            operationEnded(result)
                         })
                     }
                     asyncOperation.completionBlock = {pingpongCompletion(asyncOperation.result)}
@@ -117,9 +125,9 @@ public class SynologySwiftURLResolver {
                 /* Ping external address IPV6 */
                 if let ip = data.server?.external?.ipv6, ip != "::" {
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         testPingPongHost(host: ip, port: data.server?.external?.port ?? port, completion: { (result) in
-                            asyncOperation.result = result
+                            operationEnded(result)
                         })
                     }
                     asyncOperation.completionBlock = {pingpongCompletion(asyncOperation.result)}
@@ -141,11 +149,11 @@ public class SynologySwiftURLResolver {
                         else {return}
                     
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         SynologySwiftTools.logMessage("URLResolver : (Step 2) Test existing tunnel")
                         
                         testPingPongHost(host: relayIp, port: relayPort, timeout: 6, completion: { (result) in
-                            asyncOperation.result = result
+                            operationEnded(result)
                         })
                     }
                     asyncOperation.completionBlock = {pingpongCompletion(asyncOperation.result)}
@@ -160,11 +168,11 @@ public class SynologySwiftURLResolver {
                     pingpongTunnelQueue.waitUntilAllOperationsAreFinished()
                     
                     guard let controlHost = data.environment?.host else {
-                        return completion(.failure(.other("No valid url resolved - Control host missing")))
+                        return endBlock(.failure(.other("No valid url resolved - Control host missing")))
                     }
                     
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.ServerInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         SynologySwiftTools.logMessage("URLResolver : (Step 3) Start tunnel creation")
                         
                         let params = [
@@ -175,31 +183,31 @@ public class SynologySwiftURLResolver {
                         ]
                         SynologySwiftCoreNetwork.performRequest(with: "https://\(controlHost)/Serv.php", for: SynologySwiftURLResolverObjectMapper.ServerInfos.self, method: .POST, params: params, timeout: 60) { (result) in
                             switch result {
-                            case .success(let serverInfos): asyncOperation.result = .success(serverInfos)
-                            case .failure(let error):       asyncOperation.result = .failure(.requestError(error))
+                            case .success(let serverInfos): operationEnded(.success(serverInfos))
+                            case .failure(let error):       operationEnded(.failure(.requestError(error)))
                             }
                         }
                     }
                     asyncOperation.completionBlock = {
                         guard let result = asyncOperation.result else {
-                            return completion(.failure(.other("No valid url resolved - No valid result")))
+                            return endBlock(.failure(.other("No valid url resolved - No valid result")))
                         }
                         switch result {
                         case .success(let data):
                             guard let ip = data.service?.relayIp, let port = data.service?.relayPort else {
-                                return completion(.failure(.other("No valid url resolved - Relay informations missing")))
+                                return endBlock(.failure(.other("No valid url resolved - Relay informations missing")))
                             }
                             let infos = DSInfos(host: ip, port: port)
                             self.dsResultInfos = infos
-                            return completion(.success(infos))
+                            return endBlock(.success(infos))
                         case .failure(let error):
-                            return completion(.failure(error))
+                            return endBlock(.failure(error))
                         }
                     }
                     newTunnelQueue.addOperation(asyncOperation)
                 })
                 
-            case .failure(let error): completion(.failure(error))
+            case .failure(let error): endBlock(.failure(error))
             }
         }
     }
@@ -243,9 +251,9 @@ extension SynologySwiftURLResolverPingPong {
             /* IPV4 interface */
             if let ip = interface.ip {
                 let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                asyncOperation.setBlockOperation {
+                asyncOperation.setBlockOperation { (operationEnded) in
                     testPingPongHost(host: ip, port: port, completion: { (result) in
-                        asyncOperation.result = result
+                        operationEnded(result)
                     })
                 }
                 asyncOperation.completionBlock = {handler?(asyncOperation.result)}
@@ -258,9 +266,9 @@ extension SynologySwiftURLResolverPingPong {
                 for ip in ipv6 {
                     guard ip.address != "::" else {continue}
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
-                    asyncOperation.setBlockOperation {
+                    asyncOperation.setBlockOperation { (operationEnded) in
                         testPingPongHost(host: "[\(ip.address)]", port: port, completion: { (result) in
-                            asyncOperation.result = result
+                            operationEnded(result)
                         })
                     }
                     asyncOperation.completionBlock = {handler?(asyncOperation.result)}

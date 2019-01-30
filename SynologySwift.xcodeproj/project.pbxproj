@@ -274,8 +274,8 @@
 		1821E92721F75F60005FBEDC /* Authentification */ = {
 			isa = PBXGroup;
 			children = (
-				1821E92821F75F60005FBEDC /* SynologySwiftAuthObjectMapper.swift */,
 				1821E92921F75F60005FBEDC /* SynologySwiftAuth.swift */,
+				1821E92821F75F60005FBEDC /* SynologySwiftAuthObjectMapper.swift */,
 			);
 			path = Authentification;
 			sourceTree = "<group>";
@@ -283,8 +283,8 @@
 		1821E92A21F75F60005FBEDC /* Global */ = {
 			isa = PBXGroup;
 			children = (
-				1821E92B21F75F60005FBEDC /* SynologySwiftGlobalObjectMapper.swift */,
 				1821E92C21F75F60005FBEDC /* SynologySwiftGlobal.swift */,
+				1821E92B21F75F60005FBEDC /* SynologySwiftGlobalObjectMapper.swift */,
 			);
 			path = Global;
 			sourceTree = "<group>";

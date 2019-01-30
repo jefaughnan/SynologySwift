@@ -57,8 +57,8 @@ SynologySwift.resolveAvailableAPIs { (result) in
     switch result {
     case .success(let data):
         for service in data.apiList! {
-            let serviceName = service.key        // Exemple : SYNO.API.Auth
-            let servicePath = service.value.path // Exemple : auth.cgi
+            let serviceName = service.key        // Example : SYNO.API.Auth
+            let servicePath = service.value.path // Example : auth.cgi
         }
     case .failure(let error): break
     }

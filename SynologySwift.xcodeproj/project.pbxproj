@@ -104,6 +104,13 @@
 		1821EA9A21F8B615005FBEDC /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821EA9521F8B615005FBEDC /* SwCrypt.swift */; };
 		1821EA9B21F8B615005FBEDC /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821EA9521F8B615005FBEDC /* SwCrypt.swift */; };
 		1821EA9C21F8B615005FBEDC /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821EA9521F8B615005FBEDC /* SwCrypt.swift */; };
+		1851E4582201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
+		1851E4592201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
+		1851E45A2201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
+		1851E45B2201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
+		1851E460220200F6003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
+		1851E461220200F7003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
+		1851E462220200F7003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +164,7 @@
 		1821EA2C21F89F2C005FBEDC /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		1821EA2D21F89F2C005FBEDC /* SynologySwift.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SynologySwift.podspec; sourceTree = "<group>"; };
 		1821EA9521F8B615005FBEDC /* SwCrypt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwCrypt.swift; sourceTree = "<group>"; };
+		1851E4572201F66D003F11B2 /* default_syno_apis.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = default_syno_apis.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -283,6 +291,7 @@
 		1821E92A21F75F60005FBEDC /* Global */ = {
 			isa = PBXGroup;
 			children = (
+				1851E45F2201F6B1003F11B2 /* Ressources */,
 				1821E92C21F75F60005FBEDC /* SynologySwiftGlobal.swift */,
 				1821E92B21F75F60005FBEDC /* SynologySwiftGlobalObjectMapper.swift */,
 			);
@@ -301,10 +310,10 @@
 		1821E93121F75F60005FBEDC /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				1821E93221F75F60005FBEDC /* SynologySwiftTools.swift */,
-				1821E93321F75F61005FBEDC /* SynologySwiftAsyncOperation.swift */,
 				1821E93421F75F61005FBEDC /* Ressources */,
+				1821E93221F75F60005FBEDC /* SynologySwiftTools.swift */,
 				1821E93721F75F61005FBEDC /* SynologySwiftConstants.swift */,
+				1821E93321F75F61005FBEDC /* SynologySwiftAsyncOperation.swift */,
 				1821E93821F75F61005FBEDC /* SynologySwiftCoreNetwork.swift */,
 			);
 			path = Core;
@@ -325,6 +334,14 @@
 				1821E9B321F763C8005FBEDC /* SynologySwiftTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		1851E45F2201F6B1003F11B2 /* Ressources */ = {
+			isa = PBXGroup;
+			children = (
+				1851E4572201F66D003F11B2 /* default_syno_apis.json */,
+			);
+			path = Ressources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -552,6 +569,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E4582201F66D003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,6 +577,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E460220200F6003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,6 +585,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E4592201F66D003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,6 +593,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E461220200F7003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,6 +601,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E45A2201F66D003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,6 +609,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E45B2201F66D003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -594,6 +617,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1851E462220200F7003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

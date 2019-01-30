@@ -68,7 +68,7 @@ SynologySwift.resolveAvailableAPIs { (result) in
 Auth connection with encryption :
 
 ```
-SynologySwift.login(quickConnectid: "your-quick-id", login: "login", password: "password") { (result) in
+SynologySwift.login(quickConnectid: "your-quick-id", login: "login", password: "password", useDefaultCacheApis: false) { (result) in
     switch result {
     case .success(let data):
         let accountName = data.account // Account name
@@ -76,6 +76,7 @@ SynologySwift.login(quickConnectid: "your-quick-id", login: "login", password: "
     case .failure(let error): break
     }
 }
+/* NB : Set 'useDefaultCacheApis' for faster login. If true, we use default auth and encryption APIs paths, instead fetch all available APIs on your DS. Use at your own risk. */
 ```
 
 Details

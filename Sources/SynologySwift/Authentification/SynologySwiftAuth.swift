@@ -120,7 +120,7 @@ public class SynologySwiftAuth {
                 if encryptionInfos.success && encryptionInfos.infos != nil {completion(.success(encryptionInfos))}
                 else {
                     let errorDescription: String
-                    if let code = encryptionInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
+                    if let code = encryptionInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
                         errorDescription = "An error occured - \(error.description)"
                     } else {
                         errorDescription = "An error occured - Encryption infos not reachable"
@@ -194,7 +194,9 @@ public class SynologySwiftAuth {
                     completion(.success(authInfos))
                 } else {
                     let errorDescription: String
-                    if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
+                    if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestAuthError(rawValue: code) {
+                        errorDescription = "An error occured - \(error.description)"
+                    } else if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
                         errorDescription = "An error occured - \(error.description)"
                     } else {
                         errorDescription = "An error occured - Unknown auth error"

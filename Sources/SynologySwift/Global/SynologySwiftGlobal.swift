@@ -48,7 +48,7 @@ class SynologySwiftGlobal {
                     endBlock(.success(apisInfos))
                 } else {
                     let errorDescription: String
-                    if let code = apisInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
+                    if let code = apisInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
                         errorDescription = "An error occured - \(error.description)"
                     } else {
                         errorDescription = "An error occured - APIs infos not reachable"

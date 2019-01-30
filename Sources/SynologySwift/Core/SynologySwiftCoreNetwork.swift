@@ -36,7 +36,7 @@ public class SynologySwiftCoreNetwork {
         case jsonParsingError(Error)
     }
     
-    enum RequestQuickConnectCommonError: Int {
+    enum RequestCommonError: Int {
         case unknowError              = 100
         case invalidParameter         = 101
         case apiDoesNotExist          = 102
@@ -56,6 +56,24 @@ public class SynologySwiftCoreNetwork {
             case .sessionInsuffisanceScope: return "The logged in session does not have permission"
             case .sessionExpired:           return "Session timeout"
             case .sessionDuplicate:         return "Session interrupted by duplicate login"
+            }
+        }
+    }
+    
+    enum RequestAuthError: Int {
+        case invalidAccount            = 400
+        case accountDisabled           = 401
+        case denied                    = 402
+        case twoStepVerification       = 403
+        case twoStepVerificationFailed = 404
+        
+        var description: String {
+            switch self {
+            case .invalidAccount:            return "No such account or incorrect password"
+            case .accountDisabled:           return "Account disabled"
+            case .denied:                    return "Permission denied"
+            case .twoStepVerification:       return "2-step verification code required"
+            case .twoStepVerificationFailed: return "Failed to authenticate 2-step verification code"
             }
         }
     }

@@ -26,11 +26,11 @@ public class SynologySwift {
      */
     
     /// Global connect login whole process
-    public static func login(quickConnectid: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
+    public static func login(quickConnectid: String, login: String, password: String, useDefaultCacheApis: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
         /* Get global DSM path infos */
         SynologySwift.resolveURL(quickConnectId: quickConnectid) { (dsInfos) in
             /* Get APIsInfos */
-            SynologySwift.resolveAvailableAPIs(completion: { (apisInfos) in
+            SynologySwift.resolveAvailableAPIs(forceDefaultCache: useDefaultCacheApis, completion: { (apisInfos) in
                 /* Start Auth login */
                 SynologySwift.resolveLogin(login: login, password:  password, completion: completion)
             })
@@ -43,8 +43,8 @@ public class SynologySwift {
     }
     
     /// List available APIs on specific DS
-    public static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
-        SynologySwiftGlobal.resolveAvailableAPIs(dsInfos: dsInfos, completion: completion)
+    public static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, forceDefaultCache: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
+        SynologySwiftGlobal.resolveAvailableAPIs(dsInfos: dsInfos, forceDefaultCache: forceDefaultCache, completion: completion)
     }
     
     /// Auth connection with encryption

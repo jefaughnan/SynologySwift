@@ -30,22 +30,30 @@ public class SynologySwiftAuth {
      */
     static func login(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
         
+        /* Time profiler */
+        let startTime = DispatchTime.now()
+        let endBlock: (SynologySwift.Result<DSAuthInfos>) -> Void = { (result: SynologySwift.Result<DSAuthInfos>) in
+            let endTime = DispatchTime.now()
+            SynologySwiftTools.logTimeProfileInterval(message: "Auth", start: startTime, end: endTime)
+            completion(result)
+        }
+        
         /* Return current auth infos session for account */
-        if authInfos.account == login && authInfos.sid != nil {return completion(.success(authInfos))}
+        if authInfos.account == login && authInfos.sid != nil {return endBlock(.success(authInfos))}
         
         /* Global DS infos */
         guard let dsInfos = dsInfos else {
-            return completion(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
+            return endBlock(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
         }
         
         /* Encryption service path */
         guard let encryptionServicePath = encryptionServicePath ?? SynologySwiftGlobal.serviceInfoForName("SYNO.API.Encryption")?.path else {
-            return completion(.failure(.other("Please provide encryption service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
+            return endBlock(.failure(.other("Please provide encryption service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
         }
         
         /* Auth service path */
         guard let authServicePath = authServicePath ?? SynologySwiftGlobal.serviceInfoForName("SYNO.API.Auth")?.path else {
-            return completion(.failure(.other("Please provide auth service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
+            return endBlock(.failure(.other("Please provide auth service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
         }
         
         /* Save account id */
@@ -62,8 +70,8 @@ public class SynologySwiftAuth {
                 case .success(let authInfos):
                     SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
                     self.authInfos.sid = authInfos.infos?.sid
-                    completion(.success(self.authInfos))
-                case .failure(let error): completion(.failure(error))
+                    endBlock(.success(self.authInfos))
+                case .failure(let error): endBlock(.failure(error))
                 }
             }
         } else {
@@ -83,12 +91,12 @@ public class SynologySwiftAuth {
                         case .success(let authInfos):
                             SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
                             self.authInfos.sid = authInfos.infos?.sid
-                            completion(.success(self.authInfos))
-                        case .failure(let error): completion(.failure(error))
+                            endBlock(.success(self.authInfos))
+                        case .failure(let error): endBlock(.failure(error))
                         }
                     }
                     
-                case .failure(let error): completion(.failure(error))
+                case .failure(let error): endBlock(.failure(error))
                 }
             }
         }
@@ -105,13 +113,14 @@ public class SynologySwiftAuth {
             "method": "getinfo",
             "version": "1"
         ]
+        
         SynologySwiftCoreNetwork.performRequest(with: "http://\(dsInfos.host):\(dsInfos.port)/webapi/\(encryptionServicePath)", for: SynologySwiftAuthObjectMapper.EncryptionInfos.self, method: .POST, params: params, contentType: "application/x-www-form-urlencoded; charset=utf-8") { (result) in
             switch result {
             case .success(let encryptionInfos):
                 if encryptionInfos.success && encryptionInfos.infos != nil {completion(.success(encryptionInfos))}
                 else {
                     let errorDescription: String
-                    if let code = encryptionInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
+                    if let code = encryptionInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
                         errorDescription = "An error occured - \(error.description)"
                     } else {
                         errorDescription = "An error occured - Encryption infos not reachable"
@@ -154,7 +163,7 @@ public class SynologySwiftAuth {
             return completion(.failure(.other("An error occured - Failed to generate encrypt auth RSA public key")))
         }
         
-        let tag = "PUBIC-" + String(encryptionInfo.publicKey.hashValue)
+        let tag = "PUBLIC-" + String(encryptionInfo.publicKey.hashValue)
         
         guard let rsa = (try? CC.RSA.encrypt(passphrase.data(using: .utf8)!, derKey: publicKeyDER, tag:tag.data(using: .utf8)!, padding: .pkcs1, digest: .none)) else {
             return completion(.failure(.other("An error occured - Failed to generate encrypt auth RSA params")))
@@ -185,7 +194,9 @@ public class SynologySwiftAuth {
                     completion(.success(authInfos))
                 } else {
                     let errorDescription: String
-                    if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
+                    if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestAuthError(rawValue: code) {
+                        errorDescription = "An error occured - \(error.description)"
+                    } else if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
                         errorDescription = "An error occured - \(error.description)"
                     } else {
                         errorDescription = "An error occured - Unknown auth error"

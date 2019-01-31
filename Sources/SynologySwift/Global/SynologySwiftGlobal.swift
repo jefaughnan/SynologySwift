@@ -13,13 +13,31 @@ class SynologySwiftGlobal {
     
     static var APIsInfo: SynologySwiftGlobalObjectMapper.APIsInfo?
     
-    static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
+    static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, forceDefaultCache: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
+        
+        /* Time profiler */
+        let startTime = DispatchTime.now()
+        let endBlock: (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> Void = { (result: SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) in
+            let endTime = DispatchTime.now()
+            SynologySwiftTools.logTimeProfileInterval(message: "Global APIs", start: startTime, end: endTime)
+            completion(result)
+        }
         
         /* Return existing APIs infos if already exist */
-        if let apisInfos = APIsInfo {return completion(.success(apisInfos))}
+        if let apisInfos = APIsInfo {return endBlock(.success(apisInfos))}
+        
+        /* Return default cache value if enable */
+        if forceDefaultCache, let path = Bundle(for: self).path(forResource: "default_syno_apis", ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path))
+                let apisInfos = try JSONDecoder().decode(SynologySwiftGlobalObjectMapper.APIsInfo.self, from: data)
+                APIsInfo = apisInfos
+                return endBlock(.success(apisInfos))
+            } catch _ {/* Error, fetch infos instead */}
+        }
         
         guard let dsInfos = dsInfos else {
-            return completion(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
+            return endBlock(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
         }
         
         let params = [
@@ -37,18 +55,18 @@ class SynologySwiftGlobal {
                 /* Check data integrity */
                 if apisInfos.success {
                     self.APIsInfo = apisInfos
-                    completion(.success(apisInfos))
+                    endBlock(.success(apisInfos))
                 } else {
                     let errorDescription: String
-                    if let code = apisInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestQuickConnectCommonError(rawValue: code) {
+                    if let code = apisInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
                         errorDescription = "An error occured - \(error.description)"
                     } else {
                         errorDescription = "An error occured - APIs infos not reachable"
                     }
-                    completion(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
+                    endBlock(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
                 }
             case .failure(let error):
-                completion(.failure(.requestError(error)))
+                endBlock(.failure(.requestError(error)))
             }
         }
     }

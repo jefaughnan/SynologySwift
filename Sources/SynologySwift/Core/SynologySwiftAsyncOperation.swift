@@ -15,14 +15,14 @@ class SynologySwiftAsyncOperation<T: Decodable>: Operation {
     override var isExecuting: Bool { return state == .executing }
     override var isFinished: Bool { return state == .finished }
     
-    var result: SynologySwift.Result<T>? {
+    private(set) var result: SynologySwift.Result<T>? {
         didSet {
             guard result != nil else {return}
             state = .finished
         }
     }
     
-    var state = State.ready {
+    private var state = State.ready {
         willSet {
             willChangeValue(forKey: state.keyPath)
             willChangeValue(forKey: newValue.keyPath)
@@ -54,16 +54,18 @@ class SynologySwiftAsyncOperation<T: Decodable>: Operation {
             state = .finished
         } else {
             state = .executing
-            blockOperation?()
+            blockOperation?({
+                self.result = $0
+            })
         }
     }
     
-    func setBlockOperation(_ operation: @escaping ()->()) {
+    func setBlockOperation(_ operation: @escaping (_ endHandler: @escaping (_ result: SynologySwift.Result<T>?)->Void)->()) {
         blockOperation = operation
     }
     
     /* Mark: Private */
     
-    private var blockOperation: (()->())? = nil
+    private var blockOperation: ((_ endHandler: @escaping (_ result: SynologySwift.Result<T>?)->Void)->())? = nil
 
 }

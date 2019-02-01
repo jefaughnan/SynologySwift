@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
     s.social_media_url   = "https://twitter.com/lebasalte"
 
     s.requires_arc = true
-    s.swift_version = '4.0'
+    s.swift_version = '4.2'
     s.source       = { :git => "https://github.com/Thomaslegravier/SynologySwift.git", :tag => "#{s.version}" }
     s.source_files  = "Sources/SynologySwift/**/*.swift"
 

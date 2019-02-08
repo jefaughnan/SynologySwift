@@ -43,12 +43,17 @@ public class SynologySwift {
     }
     
     /// List available APIs on specific DS
-    public static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, forceDefaultCache: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
+    public static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, forceDefaultCache: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
         SynologySwiftGlobal.resolveAvailableAPIs(dsInfos: dsInfos, forceDefaultCache: forceDefaultCache, completion: completion)
     }
     
+    /// Specific API informations
+    public static func serviceInfos(serviceName: String) -> SynologySwiftGlobalObjectMapper.APIInfo? {
+        return SynologySwiftGlobal.serviceInfoForName(serviceName)
+    }
+    
     /// Auth connection with encryption
-    public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
+    public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
         SynologySwiftAuth.login(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath, authServicePath: authServicePath, login: login, password: password, completion: completion)
     }
 

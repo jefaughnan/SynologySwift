@@ -12,11 +12,12 @@ import Foundation
 public class SynologySwiftURLResolver {
     
     public struct DSInfos {
+        public let quickId: String
         public let host: String
         public let port: Int
     }
     
-    public static var dsResultInfos: DSInfos?
+    public static var dsInfos: DSInfos?
     
     static func resolve(quickConnectId: String, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
         
@@ -29,7 +30,7 @@ public class SynologySwiftURLResolver {
         }
         
         /* Return existing DS infos if already exist */
-        if let dsResultInfos = dsResultInfos {return endBlock(.success(dsResultInfos))}
+        if let dsInfos = dsInfos {return endBlock(.success(dsInfos))}
         
         getServerInfosForId(quickConnectId) { (result) in
             switch result {
@@ -56,7 +57,7 @@ public class SynologySwiftURLResolver {
                 /* Ping completion block */
                 let pingpongCompletion = { (result: SynologySwift.Result<SynologySwiftURLResolverObjectMapper.PingPongInfos>?) -> Void in
                     /* Call after each pingpong call complete */
-                    guard dsResultInfos == nil, let result = result else {return}
+                    guard dsInfos == nil, let result = result else {return}
                     switch result {
                     case .success(let data):
                         guard data.success && !data.diskHibernation,
@@ -72,8 +73,8 @@ public class SynologySwiftURLResolver {
                         newTunnelQueue.isSuspended = true
                         newTunnelQueue.cancelAllOperations()
                         
-                        let infos = self.DSInfos(host: host, port: port)
-                        self.dsResultInfos = infos
+                        let infos = self.DSInfos(quickId: quickConnectId, host: host, port: port)
+                        self.dsInfos = infos
                         return endBlock(SynologySwift.Result.success(infos))
                     case .failure(_): (/* Nothing to do, not reachable */)
                     }
@@ -197,8 +198,8 @@ public class SynologySwiftURLResolver {
                             guard let ip = data.service?.relayIp, let port = data.service?.relayPort else {
                                 return endBlock(.failure(.other("No valid url resolved - Relay informations missing")))
                             }
-                            let infos = DSInfos(host: ip, port: port)
-                            self.dsResultInfos = infos
+                            let infos = DSInfos(quickId: quickConnectId, host: ip, port: port)
+                            self.dsInfos = infos
                             return endBlock(.success(infos))
                         case .failure(let error):
                             return endBlock(.failure(error))

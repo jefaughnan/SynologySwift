@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name               = "SynologySwift"
-    s.version            = "0.0.2"
+    s.version            = "0.0.3"
     s.summary            = "Swift library for accessing Synology NAS and use DiskStation APIs"
     s.description        = "Swift library for accessing Synology NAS. Resolve host/iP of your NAS with a QuickConnectId and connect by APIs throught encryption service."
     s.homepage           = "https://github.com/Thomaslegravier/SynologySwift"

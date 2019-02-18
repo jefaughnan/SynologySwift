@@ -17,7 +17,7 @@ Tools :
 Installation
 ------------
 
-### Swift 4.0+
+### Swift 4.2+
 
 With Cocoapods:
 
@@ -39,7 +39,7 @@ import SynologySwift
 
 Resolve DS reachable interface for a specific QuickConnectId :
 
-```
+```swift
 SynologySwift.resolveURL(quickConnectId: "your-quick-id") { (result) in
     switch result {
     case .success(let data):
@@ -52,7 +52,7 @@ SynologySwift.resolveURL(quickConnectId: "your-quick-id") { (result) in
 
 List available APIs on your DS :
 
-```
+```swift
 SynologySwift.resolveAvailableAPIs { (result) in
     switch result {
     case .success(let data):
@@ -67,7 +67,7 @@ SynologySwift.resolveAvailableAPIs { (result) in
 
 Auth connection with encryption :
 
-```
+```swift
 SynologySwift.login(quickConnectid: "your-quick-id", login: "login", password: "password", useDefaultCacheApis: false) { (result) in
     switch result {
     case .success(let data):
@@ -79,6 +79,13 @@ SynologySwift.login(quickConnectid: "your-quick-id", login: "login", password: "
 /* NB : Set 'useDefaultCacheApis' for faster login. If true, we use default auth and encryption APIs paths, instead fetch all available APIs on your DS. Use at your own risk. */
 ```
 
+Get info for a specific service
+
+```swift
+let dlService = SynologySwift.serviceInfos(serviceName: "SYNO.DownloadStation.Info")
+let path = dlService.path
+```
+
 Details
 -------
 
@@ -87,6 +94,7 @@ Login helper:
 - List available APIs on your DS
 - Fetch encryption details
 - Login with your account informations.
+- Get specific service info path
 
 Your login and password are encrypted and not stored.
 

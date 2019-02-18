@@ -14,6 +14,7 @@ public class SynologySwiftAuth {
     public struct DSAuthInfos {
         public var sid: String?
         public var account: String?
+        public var quickId: String?
     }
     
     struct DSEncryptionInfos {
@@ -28,7 +29,7 @@ public class SynologySwiftAuth {
      * Auth method with encryption support.
      * Thanks to : https://github.com/openstack/cinder/blob/master/cinder/volume/drivers/synology/synology_common.py
      */
-    static func login(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsResultInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
+    static func login(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
         
         /* Time profiler */
         let startTime = DispatchTime.now()
@@ -56,8 +57,9 @@ public class SynologySwiftAuth {
             return endBlock(.failure(.other("Please provide auth service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
         }
         
-        /* Save account id */
+        /* Save account id & quickConnect id */
         authInfos.account = login
+        authInfos.quickId = dsInfos.quickId
         
         /* Get encryption data if necessary */
         if encryptionInfos.account == login, let encryptionInfos = encryptionInfos.encryptionInfos {

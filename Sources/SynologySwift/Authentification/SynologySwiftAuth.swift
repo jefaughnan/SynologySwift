@@ -153,7 +153,7 @@ public class SynologySwiftAuth {
         let data = [
             "account": login,
             "passwd": password,
-            "session": "dsm",
+            "session": sessionType,
             "format": "sid",
             encryptionInfo.cipherToken: String(encryptionInfo.serverTime)
         ]

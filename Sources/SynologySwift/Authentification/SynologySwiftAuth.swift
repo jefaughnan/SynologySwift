@@ -29,7 +29,7 @@ public class SynologySwiftAuth {
      * Auth method with encryption support.
      * Thanks to : https://github.com/openstack/cinder/blob/master/cinder/volume/drivers/synology/synology_common.py
      */
-    static func login(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
+    static func login(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
         
         /* Time profiler */
         let startTime = DispatchTime.now()
@@ -67,7 +67,7 @@ public class SynologySwiftAuth {
             SynologySwiftTools.logMessage("Auth : Start login process")
             
             /* Launch login */
-            processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, login: login, password: password) { (result) in
+            processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
                 switch result {
                 case .success(let authInfos):
                     SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
@@ -88,7 +88,7 @@ public class SynologySwiftAuth {
                     SynologySwiftTools.logMessage("Auth : Start login process")
                     
                     /* Launch login */
-                    processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, login: login, password: password) { (result) in
+                    processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
                         switch result {
                         case .success(let authInfos):
                             SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
@@ -139,7 +139,7 @@ public class SynologySwiftAuth {
      * Get login infos
      */
     
-    private static func processLogin(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionInfos: SynologySwiftAuthObjectMapper.EncryptionInfos, authServicePath: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuthObjectMapper.AuthInfos>) -> ()) {
+    private static func processLogin(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionInfos: SynologySwiftAuthObjectMapper.EncryptionInfos, authServicePath: String, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuthObjectMapper.AuthInfos>) -> ()) {
         
         guard let encryptionInfo = encryptionInfos.infos else {return completion(.failure(.other("An error occured - Encryption info not found")))}
         
@@ -147,7 +147,7 @@ public class SynologySwiftAuth {
             "api": "SYNO.API.Auth",
             "method": "login",
             "version": "6",
-            "session": "dsm",
+            "session": sessionType,
         ]
         
         let data = [

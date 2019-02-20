@@ -26,13 +26,13 @@ public class SynologySwift {
      */
     
     /// Global connect login whole process
-    public static func login(quickConnectid: String, login: String, password: String, useDefaultCacheApis: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
+    public static func login(quickConnectid: String, sessionType: String, login: String, password: String, useDefaultCacheApis: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
         /* Get global DSM path infos */
         SynologySwift.resolveURL(quickConnectId: quickConnectid) { (dsInfos) in
             /* Get APIsInfos */
             SynologySwift.resolveAvailableAPIs(forceDefaultCache: useDefaultCacheApis, completion: { (apisInfos) in
                 /* Start Auth login */
-                SynologySwift.resolveLogin(login: login, password:  password, completion: completion)
+                SynologySwift.resolveLogin(sessionType: sessionType, login: login, password:  password, completion: completion)
             })
         }
     }
@@ -53,8 +53,8 @@ public class SynologySwift {
     }
     
     /// Auth connection with encryption
-    public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
-        SynologySwiftAuth.login(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath, authServicePath: authServicePath, login: login, password: password, completion: completion)
+    public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
+        SynologySwiftAuth.login(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password, completion: completion)
     }
 
 }

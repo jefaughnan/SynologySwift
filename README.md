@@ -68,7 +68,7 @@ SynologySwift.resolveAvailableAPIs { (result) in
 Auth connection with encryption :
 
 ```swift
-SynologySwift.login(quickConnectid: "your-quick-id", login: "login", password: "password", useDefaultCacheApis: false) { (result) in
+SynologySwift.login(quickConnectid: "your-quick-id", sessionType: "DownloadStation", login: "login", password: "password", useDefaultCacheApis: false) { (result) in
     switch result {
     case .success(let data):
         let accountName = data.account // Account name

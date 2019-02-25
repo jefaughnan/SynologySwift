@@ -213,6 +213,21 @@ public class SynologySwiftURLResolver {
         }
     }
     
+    static func ping(quickId: String, host: String, port: Int, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
+        /* Test interface */
+        testPingPongHost(host: host, port: port, completion: { (result) in
+            switch result {
+            case .success(let data):
+                if data.success && !data.diskHibernation {
+                    completion(.success(DSInfos(quickId: quickId, host: host, port: port)))
+                } else {
+                    completion(.failure(.other("Ping error. Disk maybe under hibernation but host is reachable.")))
+                }
+            case .failure(let error): completion(.failure(error))
+            }
+        })
+    }
+    
     /*
      * Get server infos
      */

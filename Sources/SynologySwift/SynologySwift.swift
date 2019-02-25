@@ -56,5 +56,9 @@ public class SynologySwift {
     public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
         SynologySwiftAuth.login(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password, completion: completion)
     }
-
+    
+    /// Test reachability of an interface
+    public static func ping(quickId: String, host: String, port: Int, completion: @escaping (SynologySwift.Result<SynologySwiftURLResolver.DSInfos>) -> ()) {
+        SynologySwiftURLResolver.ping(quickId: quickId, host: host, port: port, completion: completion)
+    }
 }

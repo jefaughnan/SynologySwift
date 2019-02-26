@@ -33,7 +33,7 @@ public class SynologySwiftAuth {
         let startTime = DispatchTime.now()
         let endBlock: (SynologySwift.Result<DSAuthInfos>) -> Void = { (result: SynologySwift.Result<DSAuthInfos>) in
             let endTime = DispatchTime.now()
-            SynologySwiftTools.logTimeProfileInterval(message: "Auth", start: startTime, end: endTime)
+            SynologySwiftTools.logTimeProfileInterval(message: "Auth login", start: startTime, end: endTime)
             completion(result)
         }
         
@@ -51,19 +51,19 @@ public class SynologySwiftAuth {
         var userAuthInfos = DSAuthInfos(account: login, dsInfos: dsInfos)
         
         /* Get encryption data */
-        SynologySwiftTools.logMessage("Auth : Fetch encryption informations")
+        SynologySwiftTools.logMessage("Auth login : Fetch encryption informations")
         
         fetchEncryptionInfos(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath) { (result) in
             switch result {
             case .success(let encryptionInfos):
                 
-                SynologySwiftTools.logMessage("Auth : Start login process")
+                SynologySwiftTools.logMessage("Auth login : Start login process")
                 
                 /* Launch login */
                 processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
                     switch result {
                     case .success(let authInfos):
-                        SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
+                        SynologySwiftTools.logMessage("Auth login : Success with sid \(authInfos.infos?.sid ?? "")")
                         userAuthInfos.sid = authInfos.infos?.sid
                         endBlock(.success(userAuthInfos))
                     case .failure(let error): endBlock(.failure(error))
@@ -71,6 +71,47 @@ public class SynologySwiftAuth {
                 }
                 
             case .failure(let error): endBlock(.failure(error))
+            }
+        }
+    }
+    
+    static func logout(dsAuthInfos: DSAuthInfos, authServicePath: String? = nil, sessionType: String, completion: @escaping (SynologySwift.Result<Bool>) -> ()) {
+        /* Time profiler */
+        let startTime = DispatchTime.now()
+        let endBlock: (SynologySwift.Result<Bool>) -> Void = { (result: SynologySwift.Result<Bool>) in
+            let endTime = DispatchTime.now()
+            SynologySwiftTools.logTimeProfileInterval(message: "Auth logout", start: startTime, end: endTime)
+            completion(result)
+        }
+        
+        /* Validate dsInfos */
+        guard let sid = dsAuthInfos.sid, let dsInfos = dsAuthInfos.dsInfos else {
+            return endBlock(.failure(.other("Please provide valid authInfos & dsInfos.")))
+        }
+        
+        /* Auth service path */
+        guard let authServicePath = authServicePath ?? SynologySwiftGlobal.serviceInfoForName("SYNO.API.Auth")?.path else {
+            return endBlock(.failure(.other("Please provide auth service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
+        }
+        
+        let params = [
+            "api": "SYNO.API.Auth",
+            "method": "logout",
+            "version": "1",
+            "session": sessionType,
+            "_sid": sid
+        ]
+        
+        SynologySwiftCoreNetwork.performRequest(with: "http://\(dsInfos.host):\(dsInfos.port)/webapi/\(authServicePath)", for: SynologySwiftAuthObjectMapper.LogoutInfos.self, method: .POST, params: params, contentType: "application/x-www-form-urlencoded; charset=utf-8") { (result) in
+            switch result {
+            case .success(let logoutInfos):
+                if logoutInfos.success {
+                    return endBlock(.success(true))
+                } else {
+                    return endBlock(.failure(.other(SynologySwiftTools.errorMessage(logoutInfos.error, defaultMessage: "Unknown logout error."))))
+                }
+            case .failure(let error):
+                return endBlock(.failure(.requestError(error)))
             }
         }
     }
@@ -90,15 +131,10 @@ public class SynologySwiftAuth {
         SynologySwiftCoreNetwork.performRequest(with: "http://\(dsInfos.host):\(dsInfos.port)/webapi/\(encryptionServicePath)", for: SynologySwiftAuthObjectMapper.EncryptionInfos.self, method: .POST, params: params, contentType: "application/x-www-form-urlencoded; charset=utf-8") { (result) in
             switch result {
             case .success(let encryptionInfos):
-                if encryptionInfos.success && encryptionInfos.infos != nil {completion(.success(encryptionInfos))}
-                else {
-                    let errorDescription: String
-                    if let code = encryptionInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
-                        errorDescription = "An error occured - \(error.description)"
-                    } else {
-                        errorDescription = "An error occured - Encryption infos not reachable"
-                    }
-                    completion(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
+                if encryptionInfos.success && encryptionInfos.infos != nil {
+                    completion(.success(encryptionInfos))
+                } else {
+                    completion(.failure(.other(SynologySwiftTools.errorMessage(encryptionInfos.error, defaultMessage: "Encryption infos not reachable"))))
                 }
             case .failure(let error):
                 completion(.failure(.requestError(error)))
@@ -166,15 +202,7 @@ public class SynologySwiftAuth {
                 if authInfos.success && authInfos.infos?.sid != nil {
                     completion(.success(authInfos))
                 } else {
-                    let errorDescription: String
-                    if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestAuthError(rawValue: code) {
-                        errorDescription = "An error occured - \(error.description)"
-                    } else if let code = authInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
-                        errorDescription = "An error occured - \(error.description)"
-                    } else {
-                        errorDescription = "An error occured - Unknown auth error"
-                    }
-                    completion(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
+                    completion(.failure(.other(SynologySwiftTools.errorMessage(authInfos.error, defaultMessage: "Unknown auth error"))))
                 }
             case .failure(let error):
                 completion(.failure(.requestError(error)))

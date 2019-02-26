@@ -42,6 +42,11 @@ public class SynologySwift {
         }
     }
     
+    /// Logout a session. Invalid a specific session account.
+    public static func logout(dsAuthInfos: SynologySwiftAuth.DSAuthInfos, authServicePath: String? = nil, sessionType: String, completion: @escaping (SynologySwift.Result<Bool>) -> ()) {
+        SynologySwiftAuth.logout(dsAuthInfos: dsAuthInfos, authServicePath: authServicePath, sessionType: sessionType, completion: completion)
+    }
+    
     /// Resolve DS reachable interface for a specific QuickConnectId
     public static func resolveURL(quickConnectId: String, completion: @escaping (SynologySwift.Result<SynologySwiftURLResolver.DSInfos>) -> ()) {
         SynologySwiftURLResolver.resolve(quickConnectId: quickConnectId, completion: completion)

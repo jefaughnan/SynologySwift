@@ -70,7 +70,7 @@ class SynologySwiftAuthObjectMapper {
         var error: [String: Int]?
         
         private enum CodingKeys: String, CodingKey {
-            case infos = "data"
+            case infos   = "data"
             case success = "success"
             case error   = "error"
         }
@@ -85,5 +85,25 @@ class SynologySwiftAuthObjectMapper {
     
     struct AuthInfo: Decodable {
         let sid: String
+    }
+    
+    /*
+     *   Logout infos
+     */
+    
+    struct LogoutInfos: Decodable {
+        let success: Bool // Not failable, not optional
+        var error: [String: Int]?
+        
+        private enum CodingKeys: String, CodingKey {
+            case success = "success"
+            case error   = "error"
+        }
+        
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            success = try values.decode(Bool.self, forKey: .success)
+            error = try values.decodeIfPresent([String: Int].self, forKey: .error)
+        }
     }
 }

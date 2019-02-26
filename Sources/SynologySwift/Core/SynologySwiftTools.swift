@@ -18,10 +18,23 @@ class SynologySwiftTools {
         print("SynologySwift - \(message)")
     }
 
-    /* Format error message from Synology request */
-    static func errorMessage(_ message: String) -> String {
+    /* Format error message from Synology request basic error info message */
+    static func parseErrorMessage(_ message: String) -> String {
         guard let match = message.range(of: "\\[.*?\\]$", options: .regularExpression, range: nil, locale: nil) else {return message}
         return String(message[match.lowerBound..<match.upperBound])
+    }
+    
+    /* Format error message from default API error codes */
+    static func errorMessage(_ error: [String: Int]?, defaultMessage: String? = nil) -> String {
+        let errorDescription: String
+        if let code = error?["code"], let error = SynologySwiftCoreNetwork.RequestAuthError(rawValue: code) {
+            errorDescription = "An error occured - \(error.description)"
+        } else if let code = error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
+            errorDescription = "An error occured - \(error.description)"
+        } else {
+            errorDescription = "An error occured - \(defaultMessage ?? "Unknown error")"
+        }
+        return errorDescription
     }
     
     static func logTimeProfileInterval(message: String, start: DispatchTime, end: DispatchTime) {

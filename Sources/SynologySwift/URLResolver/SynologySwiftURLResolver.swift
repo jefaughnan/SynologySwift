@@ -247,7 +247,7 @@ public class SynologySwiftURLResolver {
                 if serverInfos.error == 0 {completion(.success(serverInfos))}
                 else {
                     let errorDescription = serverInfos.errorInfo ?? "An error occured - Server infos not reachable"
-                    completion(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
+                    completion(.failure(.other(SynologySwiftTools.parseErrorMessage(errorDescription))))
                 }
             case .failure(let error):
                 completion(.failure(.requestError(error)))

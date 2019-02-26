@@ -27,13 +27,9 @@ class SynologySwiftGlobal {
         if let apisInfos = APIsInfo {return endBlock(.success(apisInfos))}
         
         /* Return default cache value if enable */
-        if forceDefaultCache, let path = Bundle(for: self).path(forResource: "default_syno_apis", ofType: "json") {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: path))
-                let apisInfos = try JSONDecoder().decode(SynologySwiftGlobalObjectMapper.APIsInfo.self, from: data)
-                APIsInfo = apisInfos
-                return endBlock(.success(apisInfos))
-            } catch _ {/* Error, fetch infos instead */}
+        if forceDefaultCache {
+            retrieveApisInfosFromCache()
+            if let apisInfos = APIsInfo {return endBlock(.success(apisInfos))}
         }
         
         let params = [
@@ -53,13 +49,7 @@ class SynologySwiftGlobal {
                     self.APIsInfo = apisInfos
                     endBlock(.success(apisInfos))
                 } else {
-                    let errorDescription: String
-                    if let code = apisInfos.error?["code"], let error = SynologySwiftCoreNetwork.RequestCommonError(rawValue: code) {
-                        errorDescription = "An error occured - \(error.description)"
-                    } else {
-                        errorDescription = "An error occured - APIs infos not reachable"
-                    }
-                    endBlock(.failure(.other(SynologySwiftTools.errorMessage(errorDescription))))
+                    endBlock(.failure(.other(SynologySwiftTools.errorMessage(apisInfos.error, defaultMessage: "APIs infos not reachable"))))
                 }
             case .failure(let error):
                 endBlock(.failure(.requestError(error)))
@@ -68,7 +58,17 @@ class SynologySwiftGlobal {
     }
     
     static func serviceInfoForName(_ name: String) -> SynologySwiftGlobalObjectMapper.APIInfo? {
+        if APIsInfo == nil {retrieveApisInfosFromCache()}
         guard let apisInfos = APIsInfo else {return nil}
         return apisInfos.apiList?.filter({ $0.key == name }).first?.value
+    }
+    
+    private static func retrieveApisInfosFromCache() {
+        guard let path = Bundle(for: self).path(forResource: "default_syno_apis", ofType: "json") else {return}
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            let apisInfos = try JSONDecoder().decode(SynologySwiftGlobalObjectMapper.APIsInfo.self, from: data)
+            APIsInfo = apisInfos
+        } catch _ {/* Error, fetch infos instead */}
     }
 }

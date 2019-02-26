@@ -14,22 +14,20 @@ public class SynologySwiftAuth {
     public struct DSAuthInfos {
         public var sid: String?
         public var account: String?
-        public var quickId: String?
+        public var dsInfos: SynologySwiftURLResolver.DSInfos?
+        
+        public init(sid: String? = nil, account: String? = nil, dsInfos: SynologySwiftURLResolver.DSInfos? = nil) {
+            self.sid = sid
+            self.account = account
+            self.dsInfos = dsInfos
+        }
     }
-    
-    struct DSEncryptionInfos {
-        var account: String?
-        var encryptionInfos: SynologySwiftAuthObjectMapper.EncryptionInfos?
-    }
-    
-    static var authInfos = DSAuthInfos()
-    static var encryptionInfos = DSEncryptionInfos()
     
     /*
      * Auth method with encryption support.
      * Thanks to : https://github.com/openstack/cinder/blob/master/cinder/volume/drivers/synology/synology_common.py
      */
-    static func login(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
+    static func login(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
         
         /* Time profiler */
         let startTime = DispatchTime.now()
@@ -37,14 +35,6 @@ public class SynologySwiftAuth {
             let endTime = DispatchTime.now()
             SynologySwiftTools.logTimeProfileInterval(message: "Auth", start: startTime, end: endTime)
             completion(result)
-        }
-        
-        /* Return current auth infos session for account */
-        if authInfos.account == login && authInfos.sid != nil {return endBlock(.success(authInfos))}
-        
-        /* Global DS infos */
-        guard let dsInfos = dsInfos else {
-            return endBlock(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
         }
         
         /* Encryption service path */
@@ -57,49 +47,30 @@ public class SynologySwiftAuth {
             return endBlock(.failure(.other("Please provide auth service path. See SynologySwiftGlobal resolveAvailableAPIs tool if necessary.")))
         }
         
-        /* Save account id & quickConnect id */
-        authInfos.account = login
-        authInfos.quickId = dsInfos.quickId
+        /* Save account id & dsInfos */
+        var userAuthInfos = DSAuthInfos(account: login, dsInfos: dsInfos)
         
-        /* Get encryption data if necessary */
-        if encryptionInfos.account == login, let encryptionInfos = encryptionInfos.encryptionInfos {
-            
-            SynologySwiftTools.logMessage("Auth : Start login process")
-            
-            /* Launch login */
-            processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
-                switch result {
-                case .success(let authInfos):
-                    SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
-                    self.authInfos.sid = authInfos.infos?.sid
-                    endBlock(.success(self.authInfos))
-                case .failure(let error): endBlock(.failure(error))
-                }
-            }
-        } else {
-            
-            SynologySwiftTools.logMessage("Auth : Fetch encryption informations")
-            
-            fetchEncryptionInfos(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath) { (result) in
-                switch result {
-                case .success(let encryptionInfos):
-                    self.encryptionInfos = DSEncryptionInfos(account: login, encryptionInfos: encryptionInfos)
-                    
-                    SynologySwiftTools.logMessage("Auth : Start login process")
-                    
-                    /* Launch login */
-                    processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
-                        switch result {
-                        case .success(let authInfos):
-                            SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
-                            self.authInfos.sid = authInfos.infos?.sid
-                            endBlock(.success(self.authInfos))
-                        case .failure(let error): endBlock(.failure(error))
-                        }
+        /* Get encryption data */
+        SynologySwiftTools.logMessage("Auth : Fetch encryption informations")
+        
+        fetchEncryptionInfos(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath) { (result) in
+            switch result {
+            case .success(let encryptionInfos):
+                
+                SynologySwiftTools.logMessage("Auth : Start login process")
+                
+                /* Launch login */
+                processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
+                    switch result {
+                    case .success(let authInfos):
+                        SynologySwiftTools.logMessage("Auth : Success with sid \(authInfos.infos?.sid ?? "")")
+                        userAuthInfos.sid = authInfos.infos?.sid
+                        endBlock(.success(userAuthInfos))
+                    case .failure(let error): endBlock(.failure(error))
                     }
-                    
-                case .failure(let error): endBlock(.failure(error))
                 }
+                
+            case .failure(let error): endBlock(.failure(error))
             }
         }
     }

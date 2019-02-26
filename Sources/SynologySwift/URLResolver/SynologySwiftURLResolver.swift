@@ -15,9 +15,13 @@ public class SynologySwiftURLResolver {
         public let quickId: String
         public let host: String
         public let port: Int
+        
+        public init(quickId: String, host: String, port: Int) {
+            self.quickId = quickId
+            self.host = host
+            self.port = port
+        }
     }
-    
-    public static var dsInfos: DSInfos?
     
     static func resolve(quickConnectId: String, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
         
@@ -28,9 +32,6 @@ public class SynologySwiftURLResolver {
             SynologySwiftTools.logTimeProfileInterval(message: "URLResolver", start: startTime, end: endTime)
             completion(result)
         }
-        
-        /* Return existing DS infos if already exist */
-        if let dsInfos = dsInfos {return endBlock(.success(dsInfos))}
         
         getServerInfosForId(quickConnectId) { (result) in
             switch result {
@@ -55,9 +56,10 @@ public class SynologySwiftURLResolver {
                 SynologySwiftTools.logMessage("URLResolver : (Step 1) Test direct interfaces")
                 
                 /* Ping completion block */
+                var hasSuccedCompletePing = false
                 let pingpongCompletion = { (result: SynologySwift.Result<SynologySwiftURLResolverObjectMapper.PingPongInfos>?) -> Void in
                     /* Call after each pingpong call complete */
-                    guard dsInfos == nil, let result = result else {return}
+                    guard !hasSuccedCompletePing, let result = result else {return}
                     switch result {
                     case .success(let data):
                         guard data.success && !data.diskHibernation,
@@ -66,6 +68,7 @@ public class SynologySwiftURLResolver {
                         else {return}
                         
                         /* Suspend queue & cancel other operations */
+                        hasSuccedCompletePing = true
                         pingpongQueue.isSuspended = true
                         pingpongQueue.cancelAllOperations()
                         pingpongTunnelQueue.isSuspended = true
@@ -74,7 +77,6 @@ public class SynologySwiftURLResolver {
                         newTunnelQueue.cancelAllOperations()
                         
                         let infos = self.DSInfos(quickId: quickConnectId, host: host, port: port)
-                        self.dsInfos = infos
                         return endBlock(SynologySwift.Result.success(infos))
                     case .failure(_): (/* Nothing to do, not reachable */)
                     }
@@ -199,7 +201,6 @@ public class SynologySwiftURLResolver {
                                 return endBlock(.failure(.other("No valid url resolved - Relay informations missing")))
                             }
                             let infos = DSInfos(quickId: quickConnectId, host: ip, port: port)
-                            self.dsInfos = infos
                             return endBlock(.success(infos))
                         case .failure(let error):
                             return endBlock(.failure(error))
@@ -213,13 +214,13 @@ public class SynologySwiftURLResolver {
         }
     }
     
-    static func ping(quickId: String, host: String, port: Int, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
-        /* Test interface */
-        testPingPongHost(host: host, port: port, completion: { (result) in
+    static func ping(dsInfos: SynologySwiftURLResolver.DSInfos, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
+        /* Test dsInfos interface */
+        testPingPongHost(host: dsInfos.host, port: dsInfos.port, completion: { (result) in
             switch result {
             case .success(let data):
                 if data.success && !data.diskHibernation {
-                    completion(.success(DSInfos(quickId: quickId, host: host, port: port)))
+                    completion(.success(dsInfos))
                 } else {
                     completion(.failure(.other("Ping error. Disk maybe under hibernation but host is reachable.")))
                 }

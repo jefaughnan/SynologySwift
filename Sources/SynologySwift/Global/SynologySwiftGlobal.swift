@@ -13,7 +13,7 @@ class SynologySwiftGlobal {
     
     static var APIsInfo: SynologySwiftGlobalObjectMapper.APIsInfo?
     
-    static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos? = SynologySwiftURLResolver.dsInfos, forceDefaultCache: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
+    static func resolveAvailableAPIs(dsInfos: SynologySwiftURLResolver.DSInfos, forceDefaultCache: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftGlobalObjectMapper.APIsInfo>) -> ()) {
         
         /* Time profiler */
         let startTime = DispatchTime.now()
@@ -34,10 +34,6 @@ class SynologySwiftGlobal {
                 APIsInfo = apisInfos
                 return endBlock(.success(apisInfos))
             } catch _ {/* Error, fetch infos instead */}
-        }
-        
-        guard let dsInfos = dsInfos else {
-            return endBlock(.failure(.other("Please provide DSInfos. See SynologySwiftURLResolver tool if necessary.")))
         }
         
         let params = [

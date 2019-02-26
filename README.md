@@ -86,6 +86,19 @@ let dlService = SynologySwift.serviceInfos(serviceName: "SYNO.DownloadStation.In
 let path = dlService.path
 ```
 
+Logout :
+
+```swift
+let dsAuthInfos = SynologySwiftAuth.DSAuthInfos(sid: "XXXXXXXXX", account: "account-name", dsInfos: SynologySwiftURLResolver.DSInfos(quickId: "your-quick-id", host: "XXXXXXX", port: 5000))
+SynologySwift.logout(dsAuthInfos: dsAuthInfos, sessionType: "DownloadStation") { (result) in
+    switch result {
+    case .success(_):         print("Success logout")
+    case .failure(let error): print(error)
+    }
+}
+/* NB : Use auth infos from your last login session to perform logout. */
+```
+
 Details
 -------
 
@@ -95,6 +108,7 @@ Login helper:
 - Fetch encryption details
 - Login with your account informations.
 - Get specific service info path
+- Logout from a specific session
 
 Your login and password are encrypted and not stored.
 

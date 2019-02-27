@@ -108,9 +108,6 @@
 		1851E4592201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
 		1851E45A2201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
 		1851E45B2201F66D003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
-		1851E460220200F6003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
-		1851E461220200F7003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
-		1851E462220200F7003F11B2 /* default_syno_apis.json in Resources */ = {isa = PBXBuildFile; fileRef = 1851E4572201F66D003F11B2 /* default_syno_apis.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -577,7 +574,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1851E460220200F6003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,7 +589,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1851E461220200F7003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,7 +612,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1851E462220200F7003F11B2 /* default_syno_apis.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

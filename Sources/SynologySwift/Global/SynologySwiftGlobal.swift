@@ -64,7 +64,7 @@ class SynologySwiftGlobal {
     }
     
     private static func retrieveApisInfosFromCache() {
-        guard let path = Bundle(for: self).path(forResource: "default_syno_apis", ofType: "json") else {return}
+        guard let path = Bundle(identifier: "fr.thomas-legravier.SynologySwift")?.path(forResource: "default_syno_apis", ofType: "json") else {return}
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: path))
             let apisInfos = try JSONDecoder().decode(SynologySwiftGlobalObjectMapper.APIsInfo.self, from: data)

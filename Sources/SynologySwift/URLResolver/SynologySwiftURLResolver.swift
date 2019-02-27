@@ -11,7 +11,7 @@ import Foundation
 
 public class SynologySwiftURLResolver {
     
-    public struct DSInfos {
+    public struct DSInfos: Codable {
         public let quickId: String
         public let host: String
         public let port: Int

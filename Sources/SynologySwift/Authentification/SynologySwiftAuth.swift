@@ -11,7 +11,7 @@ import Foundation
 
 public class SynologySwiftAuth {
 
-    public struct DSAuthInfos {
+    public struct DSAuthInfos: Codable {
         public var sid: String?
         public var account: String?
         public var dsInfos: SynologySwiftURLResolver.DSInfos?

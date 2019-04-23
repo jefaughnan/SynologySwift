@@ -17,7 +17,7 @@ Tools :
 Installation
 ------------
 
-### Swift 4.2+
+### Swift 5
 
 With Cocoapods:
 

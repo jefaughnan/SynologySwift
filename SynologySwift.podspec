@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name               = "SynologySwift"
-    s.version            = "0.0.5"
+    s.version            = "0.1.0"
     s.summary            = "Swift library for accessing Synology NAS and use DiskStation APIs"
     s.description        = "Swift library for accessing Synology NAS. Resolve host/iP of your NAS with a QuickConnectId and connect by APIs throught encryption service."
     s.homepage           = "https://github.com/Thomaslegravier/SynologySwift"
@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
     s.social_media_url   = "https://twitter.com/lebasalte"
 
     s.requires_arc = true
-    s.swift_version = '4.2'
+    s.swift_version = '5.0'
     s.source       = { :git => "https://github.com/Thomaslegravier/SynologySwift.git", :tag => "#{s.version}" }
     s.source_files  = "Sources/SynologySwift/**/*.swift"
 

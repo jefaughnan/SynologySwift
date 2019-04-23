@@ -49,20 +49,20 @@ struct AES256Crypter {
         var outLength = Int(0)
         var outBytes = [UInt8](repeating: 0, count: input.count + kCCBlockSizeAES128)
         var status: CCCryptorStatus = CCCryptorStatus(kCCSuccess)
-        input.withUnsafeBytes { (encryptedBytes: UnsafePointer<UInt8>!) -> () in
-            iv.withUnsafeBytes { (ivBytes: UnsafePointer<UInt8>!) in
-                key.withUnsafeBytes { (keyBytes: UnsafePointer<UInt8>!) -> () in
+        input.withUnsafeBytes { encryptedBytes -> Void in
+            iv.withUnsafeBytes { ivBytes -> Void in
+                key.withUnsafeBytes { keyBytes -> Void in
                     status = CCCrypt(operation,
-                                     CCAlgorithm(kCCAlgorithmAES128),            // algorithm
-                        CCOptions(kCCOptionPKCS7Padding),           // options
-                        keyBytes,                                   // key
-                        key.count,                                  // keylength
-                        ivBytes,                                    // iv
-                        encryptedBytes,                             // dataIn
-                        input.count,                                // dataInLength
-                        &outBytes,                                  // dataOut
-                        outBytes.count,                             // dataOutAvailable
-                        &outLength)                                 // dataOutMoved
+                                     CCAlgorithm(kCCAlgorithmAES128),  // algorithm
+                        CCOptions(kCCOptionPKCS7Padding),              // options
+                        keyBytes.baseAddress!,                         // key
+                        key.count,                                     // keylength
+                        ivBytes.baseAddress!,                          // iv
+                        encryptedBytes.baseAddress!,                   // dataIn
+                        input.count,                                   // dataInLength
+                        &outBytes,                                     // dataOut
+                        outBytes.count,                                // dataOutAvailable
+                        &outLength)                                    // dataOutMoved
                 }
             }
         }
@@ -76,12 +76,12 @@ struct AES256Crypter {
         let length = kCCKeySizeAES256
         var status = Int32(0)
         var derivedBytes = [UInt8](repeating: 0, count: length)
-        password.withUnsafeBytes { (passwordBytes: UnsafePointer<Int8>!) in
-            salt.withUnsafeBytes { (saltBytes: UnsafePointer<UInt8>!) in
+        password.withUnsafeBytes { passwordBytes -> Void in
+            salt.withUnsafeBytes { saltBytes -> Void in
                 status = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2),                  // algorithm
-                    passwordBytes,                                // password
+                    passwordBytes.bindMemory(to: Int8.self).baseAddress!,                                // password
                     password.count,                               // passwordLen
-                    saltBytes,                                    // salt
+                    saltBytes.bindMemory(to: UInt8.self).baseAddress!,                                    // salt
                     salt.count,                                   // saltLen
                     CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA1),   // prf
                     10000,                                        // rounds
@@ -121,8 +121,8 @@ extension AES256Crypter: Randomizer {
     
     static func randomData(length: Int) -> Data {
         var data = Data(count: length)
-        let status = data.withUnsafeMutableBytes { mutableBytes in
-            SecRandomCopyBytes(kSecRandomDefault, length, mutableBytes)
+        let status = data.withUnsafeMutableBytes { mutableBytes -> OSStatus in
+            SecRandomCopyBytes(kSecRandomDefault, length, mutableBytes.baseAddress!)
         }
         assert(status == Int32(0))
         return data

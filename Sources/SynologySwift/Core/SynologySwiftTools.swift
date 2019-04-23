@@ -52,8 +52,8 @@ class SynologySwiftTools {
     /* Format data to MD5 */
     static func dataToMD5(_ data: Data) -> Data {
         var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-        _ =  data.withUnsafeBytes { bytes in
-            CC_MD5(bytes, CC_LONG(data.count), &digest)
+        _ =  data.withUnsafeBytes { bytes -> Void in
+            CC_MD5(bytes.baseAddress!, CC_LONG(data.count), &digest)
         }
         return Data(digest)
     }

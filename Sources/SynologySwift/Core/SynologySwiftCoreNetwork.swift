@@ -111,10 +111,10 @@ public class SynologySwiftCoreNetwork {
             }
             
             guard let httpResponse = response as? HTTPURLResponse,
-                200...300 ~= httpResponse.statusCode
-                else {
-                    completion(.failure(.invalidStatusCode((response as? HTTPURLResponse)?.statusCode)))
-                    return
+                  200...300 ~= httpResponse.statusCode
+            else {
+                completion(.failure(.invalidStatusCode((response as? HTTPURLResponse)?.statusCode)))
+                return
             }
             
             guard let data = data else {

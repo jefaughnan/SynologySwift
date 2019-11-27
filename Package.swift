@@ -21,7 +21,7 @@ let package = Package(
 			dependencies: []
 		),
 		.testTarget(
-			name: "SynologySwift",
+			name: "SynologySwiftTests",
 			dependencies: ["SynologySwift"]
 		)
 	]

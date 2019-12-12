@@ -7,7 +7,7 @@
 [![Twitter](https://img.shields.io/badge/Twitter-@lebasalte-blue.svg?style=flat)](https://twitter.com/lebasalte)
 
 # SynologySwift
-Swift library for accessing Synology NAS and use DiskStation APIs.
+Swift library for Synology DiskStation and use DSM APIs
 
 Tools :
 - Resolve NAS host/ip base on QuickConnectId

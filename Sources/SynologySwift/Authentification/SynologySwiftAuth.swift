@@ -59,15 +59,43 @@ public class SynologySwiftAuth {
                 
                 SynologySwiftTools.logMessage("Auth login : Start login process")
                 
-                /* Launch login */
-                processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
+                let loginQueue = OperationQueue()
+                loginQueue.name = "Login operation queue"
+                loginQueue.maxConcurrentOperationCount = 1
+                
+                let authCompletion = { (result: SynologySwift.Result<SynologySwiftAuthObjectMapper.AuthInfos>?) -> Void in
+                    guard let result = result, userAuthInfos.sid == nil else {return}
                     switch result {
                     case .success(let authInfos):
-                        SynologySwiftTools.logMessage("Auth login : Success with sid \(authInfos.infos?.sid ?? "")")
+                        loginQueue.isSuspended = true
+                        SynologySwiftTools.logMessage("Auth login : Success with sid \(authInfos.infos?.sid ?? "") - Attempt \(SynologySwiftConstants.authLoginMaxNumberOfRetry - loginQueue.operationCount)")
+                        loginQueue.cancelAllOperations()
                         userAuthInfos.sid = authInfos.infos?.sid
                         endBlock(.success(userAuthInfos))
-                    case .failure(let error): endBlock(.failure(error))
+                    case .failure(let error):
+                        guard loginQueue.operations.isEmpty else {
+                            SynologySwiftTools.logMessage("Auth login : Failed - Attempt \(SynologySwiftConstants.authLoginMaxNumberOfRetry - loginQueue.operationCount)")
+                            return /* Do nothing, wait login retry operation */
+                        }
+                        endBlock(.failure(error))
                     }
+                }
+                
+                for _ in 1...SynologySwiftConstants.authLoginMaxNumberOfRetry {
+                   let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftAuthObjectMapper.AuthInfos>()
+                    asyncOperation.setBlockOperation { (operationEnded) in
+                        processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
+                            switch result {
+                            case .success(let authInfos): operationEnded(.success(authInfos))
+                            case .failure(let error):     operationEnded(.failure(error))
+                            }
+                        }
+                    }
+                    asyncOperation.completionBlock = {authCompletion(asyncOperation.result)}
+                    if let previousOperation = loginQueue.operations.last {
+                        asyncOperation.addDependency(previousOperation)
+                    }
+                    loginQueue.addOperation(asyncOperation)
                 }
                 
             case .failure(let error): endBlock(.failure(error))

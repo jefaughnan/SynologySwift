@@ -14,4 +14,6 @@ struct SynologySwiftConstants {
     static let logsEnabled: Bool = false
     static let defaultPort: Int = 5000
     
+    static let authLoginMaxNumberOfRetry: Int = 3
+    
 }

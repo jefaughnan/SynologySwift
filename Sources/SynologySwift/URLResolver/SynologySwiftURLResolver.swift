@@ -149,13 +149,13 @@ public class SynologySwiftURLResolver {
                         let relayIp = service.relayIp,
                         let relayPort = service.relayPort,
                         port != 0
-                        else {return}
+                    else {return}
                     
                     let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftURLResolverObjectMapper.PingPongInfos>()
                     asyncOperation.setBlockOperation { (operationEnded) in
                         SynologySwiftTools.logMessage("URLResolver : (Step 2) Test existing tunnel")
                         
-                        testPingPongHost(host: relayIp, port: relayPort, timeout: 6, completion: { (result) in
+                        testPingPongHost(host: relayIp, port: relayPort, timeout: 10, completion: { (result) in
                             operationEnded(result)
                         })
                     }
@@ -216,7 +216,7 @@ public class SynologySwiftURLResolver {
     
     static func ping(dsInfos: SynologySwiftURLResolver.DSInfos, completion: @escaping (SynologySwift.Result<DSInfos>) -> ()) {
         /* Test dsInfos interface */
-        testPingPongHost(host: dsInfos.host, port: dsInfos.port, completion: { (result) in
+        testPingPongHost(host: dsInfos.host, port: dsInfos.port, timeout: 10, completion: { (result) in
             switch result {
             case .success(let data):
                 if data.success && !data.diskHibernation {
@@ -297,7 +297,7 @@ extension SynologySwiftURLResolverPingPong {
         queue.addOperations(operations, waitUntilFinished: false)
     }
     
-    private static func testPingPongHost(host: String, port: Int? = nil, timeout: TimeInterval = 3, completion: @escaping (SynologySwift.Result<SynologySwiftURLResolverObjectMapper.PingPongInfos>) -> ()) {
+    private static func testPingPongHost(host: String, port: Int? = nil, timeout: TimeInterval = 5, completion: @escaping (SynologySwift.Result<SynologySwiftURLResolverObjectMapper.PingPongInfos>) -> ()) {
         var url = "http://\(host)"
         if let port = port {url = url + ":\(String(port))"}
         SynologySwiftCoreNetwork.performRequest(with: url + "/webman/pingpong.cgi", for: SynologySwiftURLResolverObjectMapper.PingPongInfos.self, timeout: timeout) { (result) in

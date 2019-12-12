@@ -94,9 +94,6 @@
 		1821E99121F75F61005FBEDC /* SynologySwiftCoreNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821E93821F75F61005FBEDC /* SynologySwiftCoreNetwork.swift */; };
 		1821E99221F75F61005FBEDC /* SynologySwiftCoreNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821E93821F75F61005FBEDC /* SynologySwiftCoreNetwork.swift */; };
 		1821E99321F75F61005FBEDC /* SynologySwiftCoreNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821E93821F75F61005FBEDC /* SynologySwiftCoreNetwork.swift */; };
-		1821EA6D21F8AE32005FBEDC /* SynologySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821E9B321F763C8005FBEDC /* SynologySwiftTests.swift */; };
-		1821EA6E21F8AE71005FBEDC /* SynologySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821E9B321F763C8005FBEDC /* SynologySwiftTests.swift */; };
-		1821EA6F21F8AE71005FBEDC /* SynologySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821E9B321F763C8005FBEDC /* SynologySwiftTests.swift */; };
 		1821EA9621F8B615005FBEDC /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821EA9521F8B615005FBEDC /* SwCrypt.swift */; };
 		1821EA9721F8B615005FBEDC /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821EA9521F8B615005FBEDC /* SwCrypt.swift */; };
 		1821EA9821F8B615005FBEDC /* SwCrypt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821EA9521F8B615005FBEDC /* SwCrypt.swift */; };
@@ -111,6 +108,9 @@
 		184FB76C222806F200718C01 /* SynologySwiftGlobalDefaultApis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184FB767222806EA00718C01 /* SynologySwiftGlobalDefaultApis.swift */; };
 		184FB76D222806F300718C01 /* SynologySwiftGlobalDefaultApis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184FB767222806EA00718C01 /* SynologySwiftGlobalDefaultApis.swift */; };
 		184FB76E222806F300718C01 /* SynologySwiftGlobalDefaultApis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184FB767222806EA00718C01 /* SynologySwiftGlobalDefaultApis.swift */; };
+		691E156923A2CFA700C28075 /* SynologySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691E156823A2CFA700C28075 /* SynologySwiftTests.swift */; };
+		691E156A23A2CFA700C28075 /* SynologySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691E156823A2CFA700C28075 /* SynologySwiftTests.swift */; };
+		691E156B23A2CFA700C28075 /* SynologySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691E156823A2CFA700C28075 /* SynologySwiftTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,7 +157,6 @@
 		1821E93521F75F61005FBEDC /* AES256Crypter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AES256Crypter.swift; sourceTree = "<group>"; };
 		1821E93721F75F61005FBEDC /* SynologySwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynologySwiftConstants.swift; sourceTree = "<group>"; };
 		1821E93821F75F61005FBEDC /* SynologySwiftCoreNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynologySwiftCoreNetwork.swift; sourceTree = "<group>"; };
-		1821E9B321F763C8005FBEDC /* SynologySwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynologySwiftTests.swift; sourceTree = "<group>"; };
 		1821EA1E21F89CBD005FBEDC /* Test-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Test-Info.plist"; sourceTree = "<group>"; };
 		1821EA1F21F89CBD005FBEDC /* Framework-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Framework-Info.plist"; sourceTree = "<group>"; };
 		1821EA2B21F89F2C005FBEDC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -165,6 +164,7 @@
 		1821EA2D21F89F2C005FBEDC /* SynologySwift.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SynologySwift.podspec; sourceTree = "<group>"; };
 		1821EA9521F8B615005FBEDC /* SwCrypt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwCrypt.swift; sourceTree = "<group>"; };
 		184FB767222806EA00718C01 /* SynologySwiftGlobalDefaultApis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologySwiftGlobalDefaultApis.swift; sourceTree = "<group>"; };
+		691E156823A2CFA700C28075 /* SynologySwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynologySwiftTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -331,7 +331,7 @@
 		1821EA1D21F89A47005FBEDC /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				1821E9B321F763C8005FBEDC /* SynologySwiftTests.swift */,
+				691E156823A2CFA700C28075 /* SynologySwiftTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -648,8 +648,8 @@
 				1821E94121F75F61005FBEDC /* SynologySwiftAuth.swift in Sources */,
 				184FB76C222806F200718C01 /* SynologySwiftGlobalDefaultApis.swift in Sources */,
 				1821E98721F75F61005FBEDC /* SynologySwiftConstants.swift in Sources */,
+				691E156923A2CFA700C28075 /* SynologySwiftTests.swift in Sources */,
 				1821E96B21F75F61005FBEDC /* SynologySwiftTools.swift in Sources */,
-				1821EA6D21F8AE32005FBEDC /* SynologySwiftTests.swift in Sources */,
 				1821E94821F75F61005FBEDC /* SynologySwiftGlobalObjectMapper.swift in Sources */,
 				1821E93A21F75F61005FBEDC /* SynologySwiftAuthObjectMapper.swift in Sources */,
 				1821E95D21F75F61005FBEDC /* SynologySwiftURLResolver.swift in Sources */,
@@ -691,8 +691,8 @@
 				1821E94321F75F61005FBEDC /* SynologySwiftAuth.swift in Sources */,
 				184FB76D222806F300718C01 /* SynologySwiftGlobalDefaultApis.swift in Sources */,
 				1821E98921F75F61005FBEDC /* SynologySwiftConstants.swift in Sources */,
+				691E156A23A2CFA700C28075 /* SynologySwiftTests.swift in Sources */,
 				1821E96D21F75F61005FBEDC /* SynologySwiftTools.swift in Sources */,
-				1821EA6E21F8AE71005FBEDC /* SynologySwiftTests.swift in Sources */,
 				1821E94A21F75F61005FBEDC /* SynologySwiftGlobalObjectMapper.swift in Sources */,
 				1821E93C21F75F61005FBEDC /* SynologySwiftAuthObjectMapper.swift in Sources */,
 				1821E95F21F75F61005FBEDC /* SynologySwiftURLResolver.swift in Sources */,
@@ -755,8 +755,8 @@
 				1821E94621F75F61005FBEDC /* SynologySwiftAuth.swift in Sources */,
 				184FB76E222806F300718C01 /* SynologySwiftGlobalDefaultApis.swift in Sources */,
 				1821E98C21F75F61005FBEDC /* SynologySwiftConstants.swift in Sources */,
+				691E156B23A2CFA700C28075 /* SynologySwiftTests.swift in Sources */,
 				1821E97021F75F61005FBEDC /* SynologySwiftTools.swift in Sources */,
-				1821EA6F21F8AE71005FBEDC /* SynologySwiftTests.swift in Sources */,
 				1821E94D21F75F61005FBEDC /* SynologySwiftGlobalObjectMapper.swift in Sources */,
 				1821E93F21F75F61005FBEDC /* SynologySwiftAuthObjectMapper.swift in Sources */,
 				1821E96221F75F61005FBEDC /* SynologySwiftURLResolver.swift in Sources */,
@@ -893,7 +893,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -976,7 +976,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1052,7 +1052,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1126,7 +1126,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1196,7 +1196,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1279,7 +1279,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1354,7 +1354,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1428,7 +1428,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1496,7 +1496,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1579,7 +1579,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1655,7 +1655,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1737,7 +1737,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1811,7 +1811,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1884,7 +1884,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = F86YF9Z2LT;
+				DEVELOPMENT_TEAM = R625K24H9Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

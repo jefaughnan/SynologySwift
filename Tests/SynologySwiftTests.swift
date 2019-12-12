@@ -21,8 +21,10 @@ class SynologySwiftTests: XCTestCase {
             case .success(_): XCTAssertTrue(false)
             case .failure(let error):
                 switch error {
-                case .other(let errorInfo): XCTAssertTrue(errorInfo == "[Alias not found]")
-                case .requestError(_):      XCTAssertTrue(false)
+                case .other(let errorInfo):
+                    XCTAssertTrue(errorInfo == "[Alias not found]")
+                case .requestError(_):
+                    XCTAssertTrue(false)
                 }
             }
             delayExpectation.fulfill()
@@ -34,10 +36,14 @@ class SynologySwiftTests: XCTestCase {
         
         let delayExpectation = expectation(description: "Waiting SynologySwiftAuth")
         
-        SynologySwift.login(quickConnectid: "your-quick-id", sessionType: "DownloadStation", login: "dsdownload", password: "your-password", useDefaultCacheApis: true) { (result) in
+        SynologySwift.login(quickConnectid: "QUICKID", sessionType: "DownloadStation", login: "LOGIN", password: "PASSWORD", useDefaultCacheApis: true) { (result) in
             switch result {
-            case .success(_): XCTAssertTrue(true)
-            case .failure(let error): print(error); XCTAssertTrue(false)
+            case .success(let dsInfos):
+                print(dsInfos)
+                XCTAssertTrue(true)
+            case .failure(let error):
+                print(error)
+                XCTAssertTrue(false)
             }
             delayExpectation.fulfill()
         }
@@ -48,7 +54,7 @@ class SynologySwiftTests: XCTestCase {
     func testPing() {
         let delayExpectation = expectation(description: "Waiting ping")
         
-        let dsInfos = SynologySwiftURLResolver.DSInfos(quickId: "your-quick-id", host: "your-quick-id.synology.me", port: 5000)
+        let dsInfos = SynologySwiftURLResolver.DSInfos(quickId: "QUICKID", host: "HOST", port: 5000)
         SynologySwift.ping(dsInfos: dsInfos) { (result) in
             switch result {
             case .success(_): XCTAssertTrue(true)
@@ -62,7 +68,7 @@ class SynologySwiftTests: XCTestCase {
     func testlogout() {
         let delayExpectation = expectation(description: "Waiting logout")
         
-        let dsAuthInfos = SynologySwiftAuth.DSAuthInfos(sid: "your-sid", account: "your-account", dsInfos: SynologySwiftURLResolver.DSInfos(quickId: "your-quick-id", host: "host", port: 5000))
+        let dsAuthInfos = SynologySwiftAuth.DSAuthInfos(sid: "SID", account: "ACCOUNT", dsInfos: SynologySwiftURLResolver.DSInfos(quickId: "QUICKID", host: "HOST", port: 5000))
         SynologySwift.logout(dsAuthInfos: dsAuthInfos, sessionType: "DownloadStation") { (result) in
             switch result {
             case .success(_): XCTAssertTrue(true)

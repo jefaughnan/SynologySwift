@@ -107,6 +107,7 @@ Login helper:
 - List available APIs on your DS
 - Fetch encryption details
 - Login with your account informations.
+- Support otp code login
 - Get specific service info path
 - Logout from a specific session
 

@@ -26,7 +26,7 @@ public class SynologySwift {
      */
     
     /// Global connect login process
-    public static func login(quickConnectid: String, sessionType: String, login: String, password: String, useDefaultCacheApis: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
+    public static func login(quickConnectid: String, sessionType: String, login: String, password: String, otpCode: String? = nil, useDefaultCacheApis: Bool = false, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
         /* Get global DSM path infos */
         SynologySwift.resolveURL(quickConnectId: quickConnectid) { (dsInfosResult) in
             switch dsInfosResult {
@@ -34,7 +34,7 @@ public class SynologySwift {
                 /* Get APIsInfos */
                 SynologySwift.resolveAvailableAPIs(dsInfos: dsInfos, forceDefaultCache: useDefaultCacheApis, completion: { (apisInfos) in
                     /* Start Auth login */
-                    SynologySwift.resolveLogin(dsInfos: dsInfos, sessionType: sessionType, login: login, password:  password, completion: completion)
+                    SynologySwift.resolveLogin(dsInfos: dsInfos, sessionType: sessionType, login: login, password: password, otpCode: otpCode, completion: completion)
                 })
             case .failure(let error):
                 completion(.failure(error))
@@ -63,8 +63,8 @@ public class SynologySwift {
     }
     
     /// Auth connection with encryption
-    public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
-        SynologySwiftAuth.login(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password, completion: completion)
+    public static func resolveLogin(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, otpCode: String? = nil, completion: @escaping (SynologySwift.Result<SynologySwiftAuth.DSAuthInfos>) -> ()) {
+        SynologySwiftAuth.login(dsInfos: dsInfos, encryptionServicePath: encryptionServicePath, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password, otpCode: otpCode, completion: completion)
     }
     
     /// Test reachability of an interface

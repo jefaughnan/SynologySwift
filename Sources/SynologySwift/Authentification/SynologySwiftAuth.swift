@@ -27,7 +27,7 @@ public class SynologySwiftAuth {
      * Auth method with encryption support.
      * Thanks to : https://github.com/openstack/cinder/blob/master/cinder/volume/drivers/synology/synology_common.py
      */
-    static func login(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
+    static func login(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionServicePath: String? = nil, authServicePath: String? = nil, sessionType: String, login: String, password: String, otpCode: String? = nil, completion: @escaping (SynologySwift.Result<DSAuthInfos>) -> ()) {
         
         /* Time profiler */
         let startTime = DispatchTime.now()
@@ -84,7 +84,7 @@ public class SynologySwiftAuth {
                 for _ in 1...SynologySwiftConstants.authLoginMaxNumberOfRetry {
                    let asyncOperation = SynologySwiftAsyncOperation<SynologySwiftAuthObjectMapper.AuthInfos>()
                     asyncOperation.setBlockOperation { (operationEnded) in
-                        processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password) { (result) in
+                        processLogin(dsInfos: dsInfos, encryptionInfos: encryptionInfos, authServicePath: authServicePath, sessionType: sessionType, login: login, password: password, otpCode: otpCode) { (result) in
                             switch result {
                             case .success(let authInfos): operationEnded(.success(authInfos))
                             case .failure(let error):     operationEnded(.failure(error))
@@ -174,7 +174,7 @@ public class SynologySwiftAuth {
      * Get login infos
      */
     
-    private static func processLogin(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionInfos: SynologySwiftAuthObjectMapper.EncryptionInfos, authServicePath: String, sessionType: String, login: String, password: String, completion: @escaping (SynologySwift.Result<SynologySwiftAuthObjectMapper.AuthInfos>) -> ()) {
+    private static func processLogin(dsInfos: SynologySwiftURLResolver.DSInfos, encryptionInfos: SynologySwiftAuthObjectMapper.EncryptionInfos, authServicePath: String, sessionType: String, login: String, password: String, otpCode: String? = nil, completion: @escaping (SynologySwift.Result<SynologySwiftAuthObjectMapper.AuthInfos>) -> ()) {
         
         guard let encryptionInfo = encryptionInfos.infos else {return completion(.failure(.other("An error occured - Encryption info not found")))}
         
@@ -185,13 +185,18 @@ public class SynologySwiftAuth {
             "session": sessionType,
         ]
         
-        let data = [
+        var data = [
             "account": login,
             "passwd": password,
             "session": sessionType,
             "format": "sid",
             encryptionInfo.cipherToken: String(encryptionInfo.serverTime)
         ]
+
+        /* Add otp code param */
+        if let otpCode = otpCode {
+            data["otpCode"] = otpCode
+        }
         
         /* Generate RSA */
         let passphrase = SynologySwiftTools.generateRandomString(length: 501)
